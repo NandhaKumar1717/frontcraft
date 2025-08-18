@@ -144,18 +144,14 @@ export class AppComponent {
   scrollToContact() {
     const element = document.getElementById('contact');
     if (element) {
-      const navHeight = 80;
-      const elementPosition = element.offsetTop - navHeight;
-      window.scrollTo({ top: elementPosition, behavior: 'auto' });
+      element.scrollIntoView({ behavior: 'auto', block: 'start' });
     }
   }
 
   scrollToWork() {
     const element = document.getElementById('experience');
     if (element) {
-      const navHeight = 80;
-      const elementPosition = element.offsetTop - navHeight;
-      window.scrollTo({ top: elementPosition, behavior: 'auto' });
+      element.scrollIntoView({ behavior: 'auto', block: 'start' });
     }
   }
 
@@ -172,6 +168,7 @@ export class AppComponent {
 
   scrollToTop() {
     window.scrollTo({ top: 0, behavior: 'auto' });
+    window.history.pushState('', '', window.location.pathname);
     return false;
   }
 
