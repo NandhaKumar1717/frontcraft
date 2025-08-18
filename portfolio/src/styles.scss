@@ -1,1 +1,46 @@
-/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Montserrat:wght@300;400;500;600;700;800;900&display=swap');
+
+:root {
+  --navy-blue: #1B1B3A;
+  --navy-dark: #0F0F2A;
+  --navy-light: #2A2A4A;
+  --gold: #D4AF37;
+  --gold-light: #F7E98E;
+  --gold-dark: #B8860B;
+  --luxury-black: #000000;
+  --luxury-dark: #1A1A1A;
+  --luxury-gray: #2A2A2A;
+  --luxury-white: #FFFFFF;
+  --luxury-cream: #FFF8DC;
+  
+  --gradient-navy: linear-gradient(135deg, #1B1B3A 0%, #2A2A4A 50%, #0F0F2A 100%);
+  --gradient-gold: linear-gradient(45deg, #D4AF37 0%, #F7E98E 25%, #D4AF37 50%, #B8860B 75%, #D4AF37 100%);
+  --gradient-navy-gold: linear-gradient(135deg, #1B1B3A 0%, #D4AF37 100%);
+  --shadow-luxury: 0 10px 40px rgba(212, 175, 55, 0.4);
+  --glow-gold: 0 0 30px rgba(212, 175, 55, 0.6);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Montserrat', sans-serif;
+  background: var(--luxury-black) !important;
+  color: var(--luxury-white) !important;
+  line-height: 1.6;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+app-root {
+  display: block;
+  min-height: 100vh;
+  background: var(--luxury-black);
+}
