@@ -156,15 +156,16 @@ export class AppComponent {
   }
 
   downloadResume() {
-    // Create a temporary link element
     const link = document.createElement('a');
-    link.href = 'assets/resume/Nandha_Kumar_Resume.pdf';
-    link.download = 'Nandha_Kumar_Resume.pdf';
+    link.href = 'assets/resume/Nandha_Kumar_R_Resume.pdf';
+    link.download = 'Nandha_Kumar_R_Resume.pdf';
     link.target = '_blank';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   }
+  
+
 
   scrollToTop() {
     window.scrollTo({ top: 0, behavior: 'auto' });
