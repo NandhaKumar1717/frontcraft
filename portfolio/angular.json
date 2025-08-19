@@ -103,7 +103,7 @@
         "deploy": {
           "builder": "angular-cli-ghpages:deploy",
           "options": {
-            "branch": "portfolio"
+            "branch": "gh-pages"
           }
         }
       }
