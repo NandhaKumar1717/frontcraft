@@ -172,6 +172,14 @@ export class AppComponent {
     return false;
   }
 
+  scrollToSection(sectionId: string) {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'auto', block: 'start' });
+      window.history.pushState('', '', `#${sectionId}`);
+    }
+  }
+
   activeDemo: string | null = null;
 
   toggleCodeDemo(projectId: string) {
