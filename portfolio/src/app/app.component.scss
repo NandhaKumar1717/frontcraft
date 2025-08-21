@@ -35,6 +35,7 @@ body {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 2rem;
+  width: 100%;
 }
 
 // Header
@@ -45,7 +46,7 @@ body {
   background: #000000;
   border-bottom: 2px solid var(--primary);
   z-index: 1000;
-  box-shadow: 0 0 20px rgba(0, 102, 204, 0.3);
+  box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
   
   .container {
     display: flex;
@@ -81,7 +82,7 @@ body {
       &:hover {
         color: var(--primary);
         border-color: var(--primary);
-        box-shadow: 0 0 10px rgba(0, 102, 204, 0.5);
+        box-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
       }
     }
   }
@@ -101,7 +102,7 @@ body {
       &:hover {
         color: var(--primary);
         border-color: var(--primary);
-        box-shadow: 0 0 10px rgba(0, 102, 204, 0.5);
+        box-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
       }
     }
     
@@ -120,7 +121,7 @@ body {
       &:hover {
         background: var(--primary);
         color: #000000;
-        box-shadow: 0 0 15px rgba(0, 102, 204, 0.7);
+        box-shadow: 0 0 15px rgba(0, 255, 65, 0.7);
       }
     }
   }
@@ -129,30 +130,26 @@ body {
 // Hero
 .hero {
   padding: 6rem 0 3rem;
-  background: #000000;
-  color: #ffffff;
+  background: var(--bg-secondary);
   
   .hero-content {
     max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
     
     h1 {
       font-size: 3rem;
       font-weight: 800;
-      color: var(--primary);
+      color: var(--text-primary);
       margin-bottom: 1rem;
       line-height: 1.1;
-      font-family: 'JetBrains Mono', monospace;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      text-shadow: 0 0 20px rgba(0, 102, 204, 0.5);
     }
     
     .hero-subtitle {
       font-size: 1.25rem;
-      color: #ffffff;
+      color: var(--text-secondary);
       margin-bottom: 2rem;
       line-height: 1.5;
-      font-family: 'JetBrains Mono', monospace;
     }
     
     .hero-metrics {
@@ -207,6 +204,7 @@ body {
 .projects {
   padding: 3rem 0;
   background: var(--bg-primary);
+  scroll-margin-top: 100px;
   
   h2 {
     font-size: 2rem;
@@ -223,17 +221,24 @@ body {
   .project-grid {
     display: flex;
     flex-direction: column;
-    gap: 3rem;
+    gap: 2rem;
+    max-width: 1000px;
+    margin: 0 auto;
   }
   
   .project-card {
     background: var(--bg-secondary);
-    border: 2px solid var(--border);
-    border-radius: 12px;
-    padding: 3rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 2rem;
     box-shadow: var(--shadow);
     transition: all 0.3s;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
+    
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-hover);
+    }
     
     &:hover {
       box-shadow: var(--shadow-hover);
@@ -245,16 +250,14 @@ body {
     }
     
     .project-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1rem;
       
       h3 {
-        font-size: 1.5rem;
+        font-size: 1.4rem;
         font-weight: 600;
-        color: var(--text-primary);
+        color: var(--primary);
         margin-bottom: 0.5rem;
+        font-family: 'JetBrains Mono', monospace;
       }
       
       .project-links {
@@ -279,26 +282,23 @@ body {
     
     .project-impact {
       display: flex;
-      gap: 2rem;
-      margin-bottom: 1.5rem;
-      padding: 1rem;
-      background: var(--bg-secondary);
-      border-radius: 6px;
+      gap: 1.5rem;
+      margin-bottom: 1rem;
       
       .impact-metric {
-        text-align: center;
         
         strong {
           display: block;
-          font-size: 1.5rem;
+          font-size: 1.2rem;
           font-weight: 700;
-          color: var(--secondary);
+          color: var(--primary);
           line-height: 1;
+          font-family: 'JetBrains Mono', monospace;
         }
         
         span {
-          font-size: 0.75rem;
-          color: var(--text-muted);
+          font-size: 0.7rem;
+          color: var(--text-secondary);
           font-weight: 500;
           text-transform: uppercase;
           letter-spacing: 0.5px;
@@ -310,17 +310,20 @@ body {
       font-size: 1rem;
       color: var(--text-secondary);
       line-height: 1.6;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1rem;
     }
     
     .technical-details {
-      margin-bottom: 1.5rem;
+      margin-bottom: 1rem;
       
       h4 {
-        font-size: 1rem;
+        font-size: 0.8rem;
         font-weight: 600;
-        color: var(--text-primary);
-        margin-bottom: 0.75rem;
+        color: var(--primary);
+        margin-bottom: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-family: 'JetBrains Mono', monospace;
       }
       
       ul {
@@ -328,21 +331,23 @@ body {
         
         li {
           position: relative;
-          padding-left: 1.5rem;
-          margin-bottom: 0.5rem;
+          padding-left: 1rem;
+          margin-bottom: 0.3rem;
           color: var(--text-secondary);
-          line-height: 1.5;
+          line-height: 1.4;
+          font-size: 0.9rem;
           
           &::before {
-            content: '▸';
+            content: '>';
             position: absolute;
             left: 0;
             color: var(--primary);
             font-weight: 600;
+            font-family: 'JetBrains Mono', monospace;
           }
           
           strong {
-            color: var(--text-primary);
+            color: var(--text-secondary);
           }
         }
       }
@@ -351,17 +356,18 @@ body {
     .tech-used {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.5rem;
+      gap: 0.3rem;
       
       span {
-        background: var(--bg-code);
-        color: var(--text-primary);
-        padding: 0.25rem 0.5rem;
-        border-radius: 4px;
-        font-size: 0.75rem;
+        background: transparent;
+        color: var(--primary);
+        padding: 0.2rem 0.5rem;
+        border: 1px solid var(--primary);
+        border-radius: 3px;
+        font-size: 0.7rem;
         font-weight: 500;
         font-family: 'JetBrains Mono', monospace;
-        border: 1px solid var(--border);
+        text-transform: uppercase;
       }
     }
   }
@@ -371,6 +377,7 @@ body {
 .experience {
   padding: 3rem 0;
   background: var(--bg-secondary);
+  scroll-margin-top: 100px;
   
   h2 {
     font-size: 2rem;
@@ -515,6 +522,7 @@ body {
 .skills {
   padding: 3rem 0;
   background: var(--bg-primary);
+  scroll-margin-top: 100px;
   
   h2 {
     font-size: 2rem;
@@ -532,6 +540,8 @@ body {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 2rem;
+    max-width: 1000px;
+    margin: 0 auto;
   }
   
   .skill-category {
@@ -598,12 +608,15 @@ body {
 .contact {
   padding: 3rem 0;
   background: var(--bg-secondary);
+  scroll-margin-top: 100px;
   
   .contact-content {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 3rem;
     align-items: start;
+    max-width: 1000px;
+    margin: 0 auto;
   }
   
   .contact-info {
