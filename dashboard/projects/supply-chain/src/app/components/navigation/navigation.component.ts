@@ -9,10 +9,9 @@ import { RouterModule, Router } from '@angular/router';
   template: `
     <nav class="navbar">
       <div class="nav-brand">
-        <div class="app-logo">🚛</div>
+        <div class="app-logo">SC</div>
         <div class="app-name">
           <h2>Supply Chain Pro</h2>
-          <span class="app-subtitle">Logistics Management</span>
         </div>
       </div>
       
@@ -24,10 +23,6 @@ import { RouterModule, Router } from '@angular/router';
       </div>
       
       <div class="nav-actions">
-        <button class="notification-btn">
-          🔔
-          <span class="badge">3</span>
-        </button>
         <div class="user-menu">
           <span class="user-name">John Smith</span>
           <div class="user-avatar">JS</div>
@@ -57,7 +52,6 @@ import { RouterModule, Router } from '@angular/router';
       background: rgba(255, 255, 255, 0.2);
       padding: 0.5rem;
       border-radius: 10px;
-      backdrop-filter: blur(10px);
     }
 
     .app-name h2 {
@@ -65,12 +59,6 @@ import { RouterModule, Router } from '@angular/router';
       font-size: 1.5rem;
       font-weight: 700;
       color: white;
-    }
-
-    .app-subtitle {
-      font-size: 0.8rem;
-      opacity: 0.8;
-      color: rgba(255, 255, 255, 0.8);
     }
 
     .nav-links {
@@ -91,51 +79,17 @@ import { RouterModule, Router } from '@angular/router';
     .nav-link.active {
       color: white;
       background: rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(10px);
     }
 
     .nav-actions {
       display: flex;
       align-items: center;
-      gap: 1.5rem;
-    }
-
-    .notification-btn {
-      position: relative;
-      background: rgba(255, 255, 255, 0.2);
-      border: none;
-      padding: 0.8rem;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 1.2rem;
-      backdrop-filter: blur(10px);
-      transition: all 0.3s;
-    }
-
-    .notification-btn:hover {
-      background: rgba(255, 255, 255, 0.3);
-    }
-
-    .badge {
-      position: absolute;
-      top: -5px;
-      right: -5px;
-      background: #ff4757;
-      color: white;
-      border-radius: 50%;
-      width: 18px;
-      height: 18px;
-      font-size: 0.7rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
 
     .user-menu {
       display: flex;
       align-items: center;
       gap: 1rem;
-      cursor: pointer;
     }
 
     .user-name {
@@ -151,7 +105,6 @@ import { RouterModule, Router } from '@angular/router';
       align-items: center;
       justify-content: center;
       font-weight: 700;
-      backdrop-filter: blur(10px);
     }
   `]
 })
