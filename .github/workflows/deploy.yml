@@ -36,7 +36,6 @@ jobs:
         run: |
           cd dashboard
           npm run build
-          npm run build supply-chain
           
       - name: Setup Pages
         uses: actions/configure-pages@v4
