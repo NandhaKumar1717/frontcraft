@@ -1,0 +1,13 @@
+{
+  "name": "frontcraft-microfrontends",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "cd dashboard && npm run build",
+    "build:supply-chain": "cd dashboard && npm run build supply-chain",
+    "deploy": "npm run build && gh-pages -d dashboard/dist -b gh-pages",
+    "deploy:microfrontends": "npm run build && npm run build:supply-chain && gh-pages -d dashboard/dist -b gh-pages"
+  },
+  "devDependencies": {
+    "gh-pages": "^6.0.0"
+  }
+}
