@@ -32,16 +32,15 @@ jobs:
       - name: Build
         run: |
           cd dashboard
-          npm run build --configuration=production
+          npm run build --configuration=production --base-href=/frontcraft/dashboard/
           
       - name: Setup Pages
         uses: actions/configure-pages@v4
         
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./dashboard/dist/dashboard
-          
       - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dashboard/dist/dashboard
+          destination_dir: dashboard
+          keep_files: true
