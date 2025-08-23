@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Deploy Portfolio + Micro-Frontend Apps
 
 on:
   push:
@@ -16,31 +16,54 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Checkout
+      - name: Checkout micro-apps branch
         uses: actions/checkout@v4
+        with:
+          ref: micro-apps
+          path: micro-apps
         
+      - name: Checkout portfolio branch
+        uses: actions/checkout@v4
+        with:
+          ref: portfolio-2
+          path: portfolio
+          
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 18
           
-      - name: Install dependencies
+      - name: Build Dashboard App
         run: |
-          cd dashboard
+          cd micro-apps/dashboard
           npm ci --legacy-peer-deps
-          
-      - name: Build
-        run: |
-          cd dashboard
           npm run build --configuration=production --base-href=/frontcraft/dashboard/
+          
+      - name: Build Supply Chain App
+        run: |
+          cd micro-apps/dashboard
+          npm run build supply-chain --configuration=production --base-href=/frontcraft/supply-chain/
+          
+      - name: Prepare deployment directory
+        run: |
+          mkdir -p deploy
+          # Copy portfolio files (root)
+          cp -r portfolio/* deploy/
+          # Copy dashboard app to subfolder
+          mkdir -p deploy/dashboard
+          cp -r micro-apps/dashboard/dist/dashboard/* deploy/dashboard/
+          # Copy supply-chain app to subfolder
+          mkdir -p deploy/supply-chain
+          cp -r micro-apps/dashboard/dist/supply-chain/* deploy/supply-chain/
           
       - name: Setup Pages
         uses: actions/configure-pages@v4
         
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dashboard/dist/dashboard
-          destination_dir: dashboard
-          keep_files: true
+          path: ./deploy
+          
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
