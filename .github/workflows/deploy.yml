@@ -42,10 +42,8 @@ jobs:
       - name: Prepare deployment directory
         run: |
           mkdir -p deploy
-          # Copy all portfolio files to root
-          cp -r portfolio/* deploy/ 2>/dev/null || echo "Portfolio files not found"
-          # List what we copied for debugging
-          ls -la deploy/
+          # Copy portfolio files from portfolio-2 branch (all files including hidden ones)
+          cp -r portfolio/. deploy/
           # Copy dashboard app to subfolder
           mkdir -p deploy/dashboard
           cp -r micro-apps/dashboard/dist/dashboard/* deploy/dashboard/
