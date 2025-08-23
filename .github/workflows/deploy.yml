@@ -36,8 +36,8 @@ jobs:
       - name: Build Dashboard App
         run: |
           cd micro-apps/dashboard
-          npm ci --legacy-peer-deps
-          npm run build --configuration=production --base-href=/frontcraft/dashboard/
+          npm install --legacy-peer-deps --force
+          npm run build -- --configuration=production --base-href=/frontcraft/dashboard/
           
       - name: Prepare deployment directory
         run: |
