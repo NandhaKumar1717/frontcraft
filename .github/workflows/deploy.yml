@@ -48,14 +48,10 @@ jobs:
           mkdir -p deploy/dashboard
           cp -r micro-apps/dashboard/dist/dashboard/* deploy/dashboard/
           
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-        
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./deploy
-          
       - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          personal_token: ${{ secrets.PERSONAL_TOKEN }}
+          publish_dir: ./deploy
+          publish_branch: gh-pages
+          keep_files: false
