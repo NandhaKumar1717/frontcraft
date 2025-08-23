@@ -39,11 +39,6 @@ jobs:
           npm ci --legacy-peer-deps
           npm run build --configuration=production --base-href=/frontcraft/dashboard/
           
-      - name: Build Supply Chain App
-        run: |
-          cd micro-apps/dashboard
-          npm run build supply-chain --configuration=production --base-href=/frontcraft/supply-chain/
-          
       - name: Prepare deployment directory
         run: |
           mkdir -p deploy
@@ -52,9 +47,6 @@ jobs:
           # Copy dashboard app to subfolder
           mkdir -p deploy/dashboard
           cp -r micro-apps/dashboard/dist/dashboard/* deploy/dashboard/
-          # Copy supply-chain app to subfolder
-          mkdir -p deploy/supply-chain
-          cp -r micro-apps/dashboard/dist/supply-chain/* deploy/supply-chain/
           
       - name: Setup Pages
         uses: actions/configure-pages@v4
