@@ -28,6 +28,12 @@ jobs:
           ref: portfolio-2
           path: portfolio
           
+      - name: Debug portfolio checkout
+        run: |
+          echo "=== Portfolio-2 branch structure ==="
+          find portfolio/ -type f | head -20
+          echo "=== End portfolio structure ==="
+          
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -46,8 +52,8 @@ jobs:
           echo "=== Portfolio branch contents ==="
           ls -la portfolio/
           echo "=== End portfolio contents ==="
-          # Copy portfolio files from portfolio-2 branch src folder
-          cp -r portfolio/portfolio/src/* deploy/
+          # Copy portfolio files from portfolio-2 branch root
+          cp -r portfolio/* deploy/
           # Fix base href in index.html for GitHub Pages
           sed -i 's|<base href="/">|<base href="/frontcraft/">|g' deploy/index.html || true
           sed -i 's|href="/|href="/frontcraft/|g' deploy/index.html || true
