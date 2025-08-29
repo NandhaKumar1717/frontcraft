@@ -46,8 +46,8 @@ jobs:
           echo "=== Portfolio branch contents ==="
           ls -la portfolio/
           echo "=== End portfolio contents ==="
-          # Copy portfolio files from portfolio-2 branch (all files including hidden ones)
-          cp -r portfolio/. deploy/
+          # Copy portfolio files from portfolio-2 branch src folder
+          cp -r portfolio/portfolio/src/* deploy/
           # Debug: Check what was copied to deploy
           echo "=== Deploy directory contents ==="
           ls -la deploy/
