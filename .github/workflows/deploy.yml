@@ -51,6 +51,8 @@ jobs:
           # Debug: Check what was copied to deploy
           echo "=== Deploy directory contents ==="
           ls -la deploy/
+          echo "=== Portfolio files copied ==="
+          find deploy/ -name "*.html" -o -name "*.css" -o -name "*.js" | head -10
           echo "=== End deploy contents ==="
           # Copy dashboard app to subfolder
           mkdir -p deploy/dashboard
