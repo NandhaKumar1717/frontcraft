@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute, RouterOutlet } from '@angular/router';
 import { loadRemoteModule } from '@angular-architects/module-federation';
 import { environment } from '../environment/environment';
 
 @Component({
   selector: 'app-root',
   standalone: true,
+  imports: [RouterOutlet],
   template: `
     <div class="shell-container">
       <nav class="navbar">
@@ -55,7 +57,7 @@ import { environment } from '../environment/environment';
             <h2>{{ getModuleTitle(currentApp) }}</h2>
           </div>
           <div class="module-content">
-            <div class="loading">Loading {{ currentApp }}...</div>
+            <router-outlet></router-outlet>
           </div>
         }
       </main>
@@ -235,7 +237,16 @@ import { environment } from '../environment/environment';
 export class AppComponent implements OnInit {
   currentApp: string = '';
 
+  constructor(private router: Router, private route: ActivatedRoute) {}
+
   ngOnInit(): void {
+    // Check current route
+    this.route.url.subscribe(segments => {
+      if (segments.length > 0) {
+        this.currentApp = segments[0].path;
+      }
+    });
+
     window.addEventListener('message', (event) => {
       if (event.data.action === 'navigate-home') {
         this.goHome();
@@ -260,7 +271,8 @@ export class AppComponent implements OnInit {
         exposedModule: './Module'
       });
       
-      this.currentApp = appName;
+      // Navigate to the app route
+      this.router.navigate([appName]);
       console.log(`✅ ${appName} loaded successfully`);
       
     } catch (error) {
@@ -269,6 +281,6 @@ export class AppComponent implements OnInit {
   }
   
   goHome() {
-    this.currentApp = '';
+    this.router.navigate(['/']);
   }
 }
