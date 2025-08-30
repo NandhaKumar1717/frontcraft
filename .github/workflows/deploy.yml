@@ -52,8 +52,9 @@ jobs:
           echo "=== Portfolio branch contents ==="
           ls -la portfolio/
           echo "=== End portfolio contents ==="
-          # Copy portfolio files from portfolio-2 branch root
-          cp -r portfolio/* deploy/
+          # Copy portfolio files from portfolio-2 branch root (excluding .git)
+          cp -r portfolio/*.* deploy/ 2>/dev/null || true
+          cp -r portfolio/assets deploy/ 2>/dev/null || true
           # Fix base href in index.html for GitHub Pages
           sed -i 's|<base href="/">|<base href="/frontcraft/">|g' deploy/index.html || true
           sed -i 's|href="/|href="/frontcraft/|g' deploy/index.html || true
