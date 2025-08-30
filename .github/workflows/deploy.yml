@@ -1,78 +1,47 @@
-name: Deploy Portfolio + Micro-Frontend Apps
+name: Deploy Portfolio + Dashboard
 
 on:
   push:
     branches: [ micro-apps ]
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Checkout micro-apps branch
-        uses: actions/checkout@v4
-        with:
-          ref: micro-apps
-          path: micro-apps
-        
-      - name: Checkout portfolio branch
+      - name: Checkout portfolio-2 branch
         uses: actions/checkout@v4
         with:
           ref: portfolio-2
-          path: portfolio
-          
-      - name: Debug portfolio checkout
-        run: |
-          echo "=== Portfolio-2 branch structure ==="
-          find portfolio/ -type f | head -20
-          echo "=== End portfolio structure ==="
           
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 18
           
-      - name: Build Dashboard App
+      - name: Checkout micro-apps for dashboard
+        uses: actions/checkout@v4
+        with:
+          ref: micro-apps
+          path: micro-apps
+          
+      - name: Build Dashboard
         run: |
           cd micro-apps/dashboard
           npm install --legacy-peer-deps --force
           npm run build -- --configuration=production --base-href=/frontcraft/dashboard/
           
-      - name: Prepare deployment directory
+      - name: Prepare deployment
         run: |
           mkdir -p deploy
-          # Debug: Check what's in portfolio-2 branch
-          echo "=== Portfolio branch contents ==="
-          ls -la portfolio/
-          echo "=== End portfolio contents ==="
-          # Copy all portfolio files except .git
-          rsync -av --exclude='.git' portfolio/ deploy/
-          # Fix base href in index.html for GitHub Pages
-          sed -i 's|<base href="/">|<base href="/frontcraft/">|g' deploy/index.html || true
-          sed -i 's|href="/|href="/frontcraft/|g' deploy/index.html || true
-          sed -i 's|src="/|src="/frontcraft/|g' deploy/index.html || true
-          # Debug: Check what was copied to deploy
-          echo "=== Deploy directory contents ==="
-          ls -la deploy/
-          echo "=== Portfolio files copied ==="
-          find deploy/ -name "*.html" -o -name "*.css" -o -name "*.js" | head -10
-          echo "=== End deploy contents ==="
-          # Copy dashboard app to subfolder
+          # Copy portfolio files to root
+          cp -r * deploy/ || true
+          rm -rf deploy/micro-apps deploy/.git
+          # Copy dashboard to subfolder
           mkdir -p deploy/dashboard
           cp -r micro-apps/dashboard/dist/dashboard/* deploy/dashboard/
           
-      - name: Deploy to GitHub Pages
+      - name: Deploy
         uses: peaceiris/actions-gh-pages@v4
         with:
           personal_token: ${{ secrets.PERSONAL_TOKEN }}
           publish_dir: ./deploy
-          publish_branch: gh-pages
-          keep_files: false
-          force_orphan: true
