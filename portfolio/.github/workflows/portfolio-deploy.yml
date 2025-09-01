@@ -17,10 +17,10 @@ jobs:
           node-version: 18
           
       - name: Install dependencies
-        run: npm install
+        run: npm ci
           
       - name: Build
-        run: ng build --base-href="/frontcraft/"
+        run: npx ng build --configuration production --base-href="/frontcraft/"
           
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
