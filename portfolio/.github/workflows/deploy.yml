@@ -1,0 +1,59 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ gh-pages ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: 'portfolio/package-lock.json'
+    
+    - name: Build Portfolio
+      run: |
+        cd portfolio
+        npm ci
+        npm run build
+    
+    - name: Build Dashboard (if exists)
+      run: |
+        if [ -d "dashboard" ]; then
+          cd dashboard
+          npm ci
+          npm run build
+        fi
+    
+    - name: Create deployment structure
+      run: |
+        mkdir -p deploy
+        cp -r portfolio/dist/portfolio/browser/* deploy/
+        if [ -d "dashboard/dist" ]; then
+          mkdir -p deploy/dashboard
+          cp -r dashboard/dist/* deploy/dashboard/
+        fi
+    
+    - name: Setup Pages
+      uses: actions/configure-pages@v4
+    
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: './deploy'
+    
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
