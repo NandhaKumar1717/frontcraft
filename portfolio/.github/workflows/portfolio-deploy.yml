@@ -3,6 +3,7 @@ name: Deploy Portfolio
 on:
   push:
     branches: [ portfolio-2 ]
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -15,16 +16,21 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18
+          cache: 'npm'
+          cache-dependency-path: portfolio/package-lock.json
           
       - name: Install dependencies
+        working-directory: ./portfolio
         run: npm ci
           
       - name: Build
+        working-directory: ./portfolio
         run: npx ng build --configuration production --base-href="/frontcraft/"
           
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist/portfolio
+          publish_dir: ./portfolio/dist/portfolio
           publish_branch: gh-pages
+          destination_dir: '.'
