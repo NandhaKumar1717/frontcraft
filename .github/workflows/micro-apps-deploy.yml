@@ -1,0 +1,50 @@
+name: Deploy Micro Apps
+
+on:
+  push:
+    branches: [ micro-apps ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+          cache-dependency-path: dashboard/package-lock.json
+          
+      - name: Install dependencies
+        working-directory: ./dashboard
+        run: npm ci
+          
+      - name: Build Dashboard
+        working-directory: ./dashboard
+        run: npx ng build --configuration production --base-href="/frontcraft/dashboard/"
+          
+      - name: Build Supply Chain
+        working-directory: ./dashboard
+        run: npx ng build supply-chain --configuration production
+          
+      - name: Deploy Dashboard to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dashboard/dist/dashboard
+          publish_branch: gh-pages
+          destination_dir: dashboard
+          keep_files: true
+          
+      - name: Deploy Supply Chain to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dashboard/dist/supply-chain
+          publish_branch: gh-pages
+          destination_dir: supply-chain
+          keep_files: true
