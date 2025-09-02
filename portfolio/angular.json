@@ -98,7 +98,9 @@
         "deploy": {
           "builder": "angular-cli-ghpages:deploy",
           "options": {
-            "branch": "gh-pages"
+            "branch": "gh-pages",
+            "baseHref": "/frontcraft/",
+            "dir": "dist/portfolio/browser"
           }
         }
       }
