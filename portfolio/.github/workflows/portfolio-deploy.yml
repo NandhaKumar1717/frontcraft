@@ -34,3 +34,4 @@ jobs:
           publish_dir: ./portfolio/dist/portfolio
           publish_branch: gh-pages
           destination_dir: '.'
+          keep_files: true
