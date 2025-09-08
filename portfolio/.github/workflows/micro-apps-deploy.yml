@@ -26,9 +26,6 @@ jobs:
       - name: Copy index.html as 404.html for routing
         run: copy dist\dashboard\index.html dist\dashboard\404.html
           
-      - name: Build supply-chain
-        run: npx ng build supply-chain --configuration production --base-href="/frontcraft/supply-chain/"
-          
       - name: Deploy dashboard to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
@@ -36,13 +33,4 @@ jobs:
           publish_dir: ./dist/dashboard
           publish_branch: gh-pages
           destination_dir: 'dashboard'
-          keep_files: true
-          
-      - name: Deploy supply-chain to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist/supply-chain
-          publish_branch: gh-pages
-          destination_dir: 'supply-chain'
           keep_files: true
