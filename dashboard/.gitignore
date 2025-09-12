@@ -6,6 +6,16 @@
 /out-tsc
 /bazel-out
 
+# Build artifacts (should not be committed)
+*.js
+*.js.map
+*.css
+*.css.map
+!webpack*.js
+!server.ts
+!karma.conf.js
+!protractor.conf.js
+
 # Node
 /node_modules
 npm-debug.log
