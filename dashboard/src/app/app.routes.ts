@@ -3,6 +3,7 @@ import { DashboardComponent } from './dashboard.component';
 
 export const routes: Routes = [
   { path: '', component: DashboardComponent },
-  { path: 'dashboard', component: DashboardComponent },
+  { path: 'supply-chain', component: DashboardComponent },
+  { path: 'supply-chain/**', component: DashboardComponent },
   { path: '**', redirectTo: '' }
 ];

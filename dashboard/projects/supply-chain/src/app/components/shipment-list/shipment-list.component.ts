@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AgGridAngular } from 'ag-grid-angular';
-import { ColDef, GridReadyEvent, GridApi, ColumnApi } from 'ag-grid-community';
+import { ColDef, GridReadyEvent, GridApi } from 'ag-grid-community';
 import { SupplyChainService } from '../../services/supply-chain.service';
 import { SearchFilterComponent } from '../search-filter/search-filter.component';
 import { Shipment, SearchFilters } from '../../models/shipment.model';

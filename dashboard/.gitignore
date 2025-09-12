@@ -11,10 +11,13 @@
 *.js.map
 *.css
 *.css.map
+# Keep important config files
 !webpack*.js
 !server.ts
 !karma.conf.js
 !protractor.conf.js
+!**/webpack.config.js
+!**/webpack.prod.config.js
 
 # Node
 /node_modules
