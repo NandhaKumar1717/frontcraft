@@ -5,7 +5,7 @@ import { AnalyticsComponent } from './components/analytics/analytics.component';
 import { ReportsComponent } from './components/reports/reports.component';
 
 export const routes: Routes = [
-  { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
+  { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
   { path: 'dashboard', component: DashboardComponent },
   { path: 'shipments', component: ShipmentsComponent },
   { path: 'analytics', component: AnalyticsComponent },
