@@ -142,7 +142,7 @@ export class StatsCardsComponent implements OnInit {
   }
 
   loadStats(): void {
-    this.supplyChainService.getStats().subscribe(stats => {
+    this.supplyChainService.getMetrics().subscribe((stats: any) => {
       this.stats = stats;
     });
   }

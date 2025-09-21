@@ -1,0 +1,71 @@
+<div class="dashboard-wrapper" (click)="closeUserMenu($event)">
+  <!-- Navigation Header -->
+  <header class="navigation-header">
+    <nav class="main-navigation">
+      <!-- Brand Section -->
+      <div class="brand-section">
+        <div class="brand-icon">◆</div>
+        <h1 class="brand-title">NEXUS</h1>
+      </div>
+      
+      <!-- Center Navigation Space -->
+      <div class="center-navigation">
+        <!-- Reserved for breadcrumbs or additional nav items -->
+      </div>
+      
+      <!-- User Profile Section -->
+      <div class="user-section">
+        <span class="user-display-name">{{ userName }}</span>
+        <div class="avatar-wrapper">
+          <div class="user-avatar" (click)="toggleUserMenu()">
+            NK
+          </div>
+          <div class="user-menu" *ngIf="showUserMenu">
+            <div class="menu-item" (click)="openProfile()">My Profile</div>
+            <div class="menu-item" (click)="openSecurity()">Security Settings</div>
+            <div class="menu-item" (click)="openNotifications()">Notifications</div>
+            <div class="menu-item" (click)="openHelp()">Help & Support</div>
+            <div class="menu-item sign-out-item" (click)="logout()">Sign Out</div>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="main-content">
+    <!-- Welcome Section -->
+    <section class="welcome-section">
+      <h1 class="welcome-title">
+        Welcome, <span class="editable-name" (click)="editUserName()">{{ userName }}</span>
+      </h1>
+      <p class="welcome-subtitle">Select an application to get started</p>
+    </section>
+
+    <!-- Applications Grid -->
+    <section class="applications-grid">
+      <div class="application-card supply-chain-bg" (click)="openApp('supply-chain-tracker')">
+        <h2 class="card-title">Global Supply Chain Tracker</h2>
+        <p class="card-subtitle">Shipment & Logistics Management</p>
+      </div>
+
+      <div class="application-card pipeline-bg" (click)="openApp('pipeline-manager')">
+        <h2 class="card-title">Enterprise Pipeline Manager</h2>
+        <p class="card-subtitle">Workflow & Process Automation</p>
+      </div>
+
+      <div class="application-card automotive-bg disabled-card">
+        <h2 class="card-title">Automotive Operations Hub</h2>
+        <p class="card-subtitle">Analytics & Operations Dashboard</p>
+        <span class="disabled-badge">Coming Soon</span>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="page-footer">  
+    <div class="copyright-text">
+      <p>&copy; 2024 NexusFlow. All rights reserved.</p>
+    </div>
+  </footer>
+</div>

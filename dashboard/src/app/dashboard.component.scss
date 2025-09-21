@@ -1,0 +1,413 @@
+// Import Google Fonts
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap');
+
+// Variables
+$primary-blue: #0066ff;
+$secondary-blue: #0080ff;
+$light-blue: #00aaff;
+$dark-gray: #1a1a1a;
+$medium-gray: #333;
+$light-gray: #666;
+$background-light: #fafafa;
+$background-medium: #f5f5f5;
+$white: #ffffff;
+$light-white: #f8f9fa;
+$danger-red: #dc2626;
+$danger-light: #fef2f2;
+
+// Mixins
+@mixin gradient-text($color1, $color2, $color3: null) {
+  background: if($color3, linear-gradient(135deg, $color1, $color2, $color3), linear-gradient(135deg, $color1, $color2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+@mixin premium-shadow($opacity: 0.15) {
+  box-shadow: 0 12px 40px rgba(0, 0, 0, $opacity), 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+@mixin smooth-transition($duration: 0.3s) {
+  transition: all $duration ease;
+}
+
+// Base Styles
+.dashboard-wrapper {
+  font-family: 'Montserrat', sans-serif;
+  height: 100vh;
+  background: linear-gradient(135deg, $background-light 0%, $background-medium 100%);
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 1rem 0 1rem;
+  gap: 1rem;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+// Navigation Header
+.navigation-header {
+  background: linear-gradient(135deg, $white 0%, $light-white 100%);
+  border-radius: 16px;
+  @include premium-shadow(0.12);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+.main-navigation {
+  padding: 1.2rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: $dark-gray;
+}
+
+// Brand Section
+.brand-section {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.brand-icon {
+  font-size: 1.6rem;
+  color: $primary-blue;
+  font-weight: 700;
+}
+
+.brand-title {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  @include gradient-text($primary-blue, $secondary-blue);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+// Center Navigation
+.center-navigation {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+// User Section
+.user-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.user-display-name {
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  font-size: 0.95rem;
+  color: #0a0a0a;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.avatar-wrapper {
+  position: relative;
+}
+
+.user-avatar {
+  width: 42px;
+  height: 42px;
+  background: linear-gradient(135deg, #2a2a2a 0%, $dark-gray 100%);
+  color: $white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  cursor: pointer;
+  user-select: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2), 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.user-menu {
+  position: absolute;
+  top: 50px;
+  right: 0;
+  background: $white;
+  border-radius: 12px;
+  @include premium-shadow();
+  padding: 0.5rem 0;
+  min-width: 200px;
+  z-index: 1000;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.menu-item {
+  padding: 0.75rem 1rem;
+  color: $medium-gray;
+  font-size: 0.9rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  @include smooth-transition(0.2s);
+  cursor: pointer;
+
+  &:hover {
+    background-color: $light-white;
+  }
+
+  &.sign-out-item {
+    color: $danger-red;
+    border-top: 1px solid #f0f0f0;
+
+    &:hover {
+      background-color: $danger-light;
+    }
+  }
+}
+
+// Main Content
+.main-content {
+  flex: 1;
+  background: linear-gradient(135deg, $white 0%, $light-white 100%);
+  border-radius: 20px;
+  @include premium-shadow();
+  padding: 2rem 2.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  overflow: hidden;
+  margin-bottom: 60px;
+  min-height: 0;
+}
+
+// Welcome Section
+.welcome-section {
+  text-align: center;
+  color: $medium-gray;
+}
+
+.welcome-title {
+  font-size: 1.8rem;
+  margin: 0 0 0.3rem 0;
+  font-weight: 700;
+  letter-spacing: -0.05em;
+  color: #0a0a0a;
+  text-shadow: 0 3px 6px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.editable-name {
+  color: $primary-blue;
+  font-weight: 800;
+  cursor: pointer;
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  @include smooth-transition();
+
+  &:hover {
+    background-color: #f0f8ff;
+  }
+}
+
+.welcome-subtitle {
+  font-size: 1rem;
+  opacity: 0.8;
+  margin: 0;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  color: #2a2a2a;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+// Applications Grid
+.applications-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  width: 100%;
+}
+
+.application-card {
+  border-radius: 18px;
+  padding: 2.5rem 2rem;
+  text-align: center;
+  cursor: pointer;
+  @include smooth-transition(0.4s);
+  @include premium-shadow(0.12);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  position: relative;
+  overflow: hidden;
+  height: 160px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, $primary-blue, $secondary-blue);
+    opacity: 0;
+    @include smooth-transition();
+  }
+
+  &:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2), 0 8px 20px rgba(0, 0, 0, 0.12);
+
+    &::before {
+      opacity: 1;
+    }
+  }
+}
+
+.card-title {
+  color: $white;
+  font-size: 1.4rem;
+  margin: 0 0 0.8rem 0;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  z-index: 2;
+  position: relative;
+}
+
+.card-subtitle {
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 0.95rem;
+  margin: 0;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+  z-index: 2;
+  position: relative;
+}
+
+// Background Images for Each App
+.supply-chain-bg {
+  background: 
+    linear-gradient(135deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.4) 100%),
+    url('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800&h=600&fit=crop&crop=center');
+  background-size: cover;
+  background-position: center;
+}
+
+.pipeline-bg {
+  background: 
+    linear-gradient(135deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.4) 100%),
+    url('https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&h=600&fit=crop&crop=center');
+  background-size: cover;
+  background-position: center;
+}
+
+.automotive-bg {
+  background: 
+    linear-gradient(135deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.4) 100%),
+    url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=600&fit=crop&crop=center');
+  background-size: cover;
+  background-position: center;
+}
+
+.disabled-card {
+  opacity: 0.6;
+  cursor: not-allowed;
+  
+  &:hover {
+    transform: none;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15), 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  &::before {
+    display: none;
+  }
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 1;
+  }
+}
+
+.disabled-badge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(0, 0, 0, 0.7);
+  color: $white;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.3rem 0.8rem;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  backdrop-filter: blur(10px);
+  z-index: 3;
+}
+
+// Footer
+.page-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(135deg, $light-white 0%, #f0f0f0 100%);
+  border-radius: 0;
+  box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.12), 0 -2px 6px rgba(0, 0, 0, 0.08);
+  padding: 1rem 2rem;
+  z-index: 100;
+}
+
+.copyright-text {
+  text-align: center;
+  color: $light-gray;
+
+  p {
+    margin: 0;
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .main-navigation {
+    padding: 1rem;
+  }
+  
+  .user-display-name {
+    display: none;
+  }
+  
+  .main-content {
+    padding: 2rem 1rem;
+  }
+  
+  .applications-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .application-card {
+    height: 140px;
+    padding: 2rem 1.5rem;
+  }
+  
+  .card-title {
+    font-size: 1.2rem;
+  }
+  
+  .card-subtitle {
+    font-size: 0.85rem;
+  }
+  
+  .welcome-title {
+    font-size: 1.5rem;
+  }
+}

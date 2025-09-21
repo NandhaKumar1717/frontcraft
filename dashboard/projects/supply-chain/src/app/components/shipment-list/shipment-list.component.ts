@@ -507,10 +507,10 @@ export class ShipmentListComponent implements OnInit {
   }
 
   loadShipments(): void {
-    this.supplyChainService.getShipments(this.currentFilters, this.currentPage, this.pageSize)
+    this.supplyChainService.getShipments()
       .subscribe(result => {
-        this.shipments = result.data;
-        this.totalRecords = result.total;
+        this.shipments = result;
+        this.totalRecords = result.length;
         this.totalPages = Math.ceil(this.totalRecords / this.pageSize);
       });
   }

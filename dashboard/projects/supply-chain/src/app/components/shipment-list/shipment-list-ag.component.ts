@@ -446,11 +446,11 @@ export class ShipmentListComponent implements OnInit {
 
   loadShipments(): void {
     this.loading = true;
-    this.supplyChainService.getShipments(this.currentFilters, this.currentPage, this.pageSize)
+    this.supplyChainService.getShipments()
       .subscribe({
         next: (result) => {
-          this.shipments = result.data;
-          this.totalRecords = result.total;
+          this.shipments = result;
+          this.totalRecords = result.length;
           this.loading = false;
           console.log('Loaded shipments:', this.shipments);
         },

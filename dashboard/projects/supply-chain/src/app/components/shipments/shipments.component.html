@@ -1,0 +1,85 @@
+<div class="shipments-container">
+  <!-- Header Section -->
+  <div class="page-header">
+    <div class="header-content">
+      <h1>📦 Shipment Management</h1>
+      <p>Advanced data grid with enterprise features</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn-primary" (click)="addNewShipment()">
+        ➕ New Shipment
+      </button>
+    </div>
+  </div>
+
+  <!-- Toolbar Section -->
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <div class="search-box">
+        <input 
+          type="text" 
+          placeholder="🔍 Quick search..." 
+          [(ngModel)]="searchText"
+          (input)="onQuickFilterChanged()"
+          class="search-input">
+      </div>
+      <button class="tool-btn" (click)="resetFilters()" title="Reset Filters">
+        🔄 Reset
+      </button>
+      <button class="tool-btn" (click)="autoSizeColumns()" title="Auto Size Columns">
+        📏 Auto Size
+      </button>
+    </div>
+    
+    <div class="toolbar-right">
+      <div class="selection-info" *ngIf="selectedRows.length > 0">
+        {{ selectedRows.length }} selected
+      </div>
+      <button class="tool-btn" (click)="bulkUpdateStatus()" [disabled]="selectedRows.length === 0">
+        ✏️ Bulk Edit
+      </button>
+      <button class="tool-btn danger" (click)="bulkDelete()" [disabled]="selectedRows.length === 0">
+        🗑️ Delete
+      </button>
+      <div class="export-dropdown">
+        <button class="tool-btn">📊 Export ▼</button>
+        <div class="dropdown-menu">
+          <button (click)="exportToExcel()">📗 Excel</button>
+          <button (click)="exportToCsv()">📄 CSV</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Advanced AG-Grid -->
+  <div class="grid-container">
+    <ag-grid-angular
+      #agGrid
+      class="ag-theme-alpine"
+      [rowData]="shipmentData"
+      [columnDefs]="columnDefs"
+      [defaultColDef]="defaultColDef"
+      [gridOptions]="gridOptions"
+      [sideBar]="sideBar"
+      (gridReady)="onGridReady($event)"
+      (selectionChanged)="onSelectionChanged()"
+      style="height: 600px; width: 100%;">
+    </ag-grid-angular>
+  </div>
+
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <div class="status-item">
+      <span class="status-label">Total Records:</span>
+      <span class="status-value">{{ shipmentData.length }}</span>
+    </div>
+    <div class="status-item">
+      <span class="status-label">Selected:</span>
+      <span class="status-value">{{ selectedRows.length }}</span>
+    </div>
+    <div class="status-item">
+      <span class="status-label">Features:</span>
+      <span class="status-value">Row Grouping • Pivoting • Charts • Export</span>
+    </div>
+  </div>
+</div>

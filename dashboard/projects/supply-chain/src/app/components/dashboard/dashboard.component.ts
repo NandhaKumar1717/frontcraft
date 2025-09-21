@@ -1,413 +1,570 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { Chart, ChartConfiguration, ChartType, registerables } from 'chart.js';
 import { SupplyChainService } from '../../services/supply-chain.service';
 
-import { StatsCardsComponent } from '../stats-cards/stats-cards.component';
-import { ChartsComponent } from '../charts/charts.component';
+Chart.register(...registerables);
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, StatsCardsComponent, ChartsComponent],
-  template: `
-    <div class="dashboard-container">
-        <header class="dashboard-header">
-          <div class="header-content">
-            <h1>Dashboard Overview</h1>
-            <p>Real-time logistics management across 47 countries</p>
-          </div>
-          <div class="header-actions">
-            <button class="btn-primary" (click)="openAddShipment()">
-              + New Shipment
-            </button>
-          </div>
-        </header>
-
-        <app-stats-cards></app-stats-cards>
-        <app-charts></app-charts>
-        <div class="simple-table">
-          <h3>Recent Shipments</h3>
-          <table>
-            <thead>
-              <tr>
-                <th>Tracking #</th>
-                <th>Route</th>
-                <th>Status</th>
-                <th>Carrier</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>SC001234567</td>
-                <td>Shanghai → Los Angeles</td>
-                <td>In Transit</td>
-                <td>DHL Express</td>
-              </tr>
-              <tr>
-                <td>SC001234568</td>
-                <td>Mumbai → London</td>
-                <td>Delivered</td>
-                <td>FedEx</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-      <!-- Add Shipment Modal -->
-      <div class="modal-overlay" *ngIf="showAddShipmentModal" (click)="closeAddShipmentModal()">
-        <div class="modal-content" (click)="$event.stopPropagation()">
-          <div class="modal-header">
-            <h3>🚛 Create New Shipment</h3>
-            <button class="close-btn" (click)="closeAddShipmentModal()">×</button>
-          </div>
-          <div class="modal-body">
-            <form class="shipment-form">
-              <div class="form-row">
-                <div class="form-group">
-                  <label>Tracking Number</label>
-                  <input type="text" [(ngModel)]="newShipment.trackingNumber" readonly class="form-input readonly">
-                </div>
-                <div class="form-group">
-                  <label>Priority</label>
-                  <select [(ngModel)]="newShipment.priority" class="form-select">
-                    <option value="low">Low</option>
-                    <option value="medium">Medium</option>
-                    <option value="high">High</option>
-                    <option value="urgent">Urgent</option>
-                  </select>
-                </div>
-              </div>
-              
-              <div class="form-row">
-                <div class="form-group">
-                  <label>Origin *</label>
-                  <input type="text" [(ngModel)]="newShipment.origin" placeholder="e.g., Shanghai, China" class="form-input" required>
-                </div>
-                <div class="form-group">
-                  <label>Destination *</label>
-                  <input type="text" [(ngModel)]="newShipment.destination" placeholder="e.g., Los Angeles, USA" class="form-input" required>
-                </div>
-              </div>
-              
-              <div class="form-row">
-                <div class="form-group">
-                  <label>Weight (kg) *</label>
-                  <input type="number" [(ngModel)]="newShipment.weight" placeholder="0" class="form-input" required>
-                </div>
-                <div class="form-group">
-                  <label>Value (USD) *</label>
-                  <input type="number" [(ngModel)]="newShipment.value" placeholder="0" class="form-input" required>
-                </div>
-              </div>
-              
-              <div class="form-group">
-                <label>Carrier *</label>
-                <select [(ngModel)]="newShipment.carrier" class="form-select" required>
-                  <option value="">Select Carrier</option>
-                  <option value="DHL Express">DHL Express</option>
-                  <option value="FedEx">FedEx</option>
-                  <option value="UPS">UPS</option>
-                  <option value="Maersk">Maersk</option>
-                  <option value="COSCO">COSCO</option>
-                  <option value="Emirates SkyCargo">Emirates SkyCargo</option>
-                </select>
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button class="btn-secondary" (click)="closeAddShipmentModal()">Cancel</button>
-            <button class="btn-primary" (click)="saveShipment()" [disabled]="!isFormValid()">Create Shipment</button>
-          </div>
-        </div>
-      </div>
-  `,
-  styles: [`
-    .dashboard-container {
-      padding: 2rem;
-      background: #f8f9fa;
-      min-height: calc(100vh - 140px);
-    }
-
-    .dashboard-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 2rem;
-      background: white;
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-
-    .header-content h1 {
-      color: #2c3e50;
-      font-size: 2rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .header-content p {
-      color: #7f8c8d;
-      font-size: 1rem;
-    }
-
-    .btn-primary {
-      background: linear-gradient(45deg, #3498db, #2980b9);
-      color: white;
-      border: none;
-      padding: 1rem 2rem;
-      border-radius: 8px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
-    }
-
-    .btn-primary:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    .btn-secondary {
-      background: #6c757d;
-      color: white;
-      border: none;
-      padding: 1rem 2rem;
-      border-radius: 8px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-
-    .btn-secondary:hover {
-      background: #5a6268;
-    }
-
-    /* Modal Styles */
-    .modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.5);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      backdrop-filter: blur(5px);
-    }
-
-    .modal-content {
-      background: white;
-      border-radius: 15px;
-      max-width: 600px;
-      width: 90%;
-      max-height: 80vh;
-      overflow-y: auto;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    }
-
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 2rem;
-      border-bottom: 1px solid #e9ecef;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      border-radius: 15px 15px 0 0;
-    }
-
-    .modal-header h3 {
-      margin: 0;
-      font-size: 1.5rem;
-    }
-
-    .close-btn {
-      background: rgba(255, 255, 255, 0.2);
-      border: none;
-      color: white;
-      font-size: 1.5rem;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .modal-body {
-      padding: 2rem;
-    }
-
-    .shipment-form {
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-    }
-
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    .form-group label {
-      font-weight: 600;
-      color: #2c3e50;
-      font-size: 0.9rem;
-    }
-
-    .form-input,
-    .form-select {
-      padding: 1rem;
-      border: 2px solid #e9ecef;
-      border-radius: 8px;
-      font-size: 1rem;
-      transition: border-color 0.3s;
-    }
-
-    .form-input:focus,
-    .form-select:focus {
-      outline: none;
-      border-color: #667eea;
-      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-    }
-
-    .form-input.readonly {
-      background: #f8f9fa;
-      color: #6c757d;
-    }
-
-    .modal-footer {
-      display: flex;
-      justify-content: flex-end;
-      gap: 1rem;
-      padding: 2rem;
-      border-top: 1px solid #e9ecef;
-      background: #f8f9fa;
-      border-radius: 0 0 15px 15px;
-    }
-
-    @media (max-width: 768px) {
-      .form-row {
-        grid-template-columns: 1fr;
-      }
-      
-      .modal-footer {
-        flex-direction: column;
-      }
-    }
-
-    .simple-table {
-      background: white;
-      border-radius: 12px;
-      padding: 2rem;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-
-    .simple-table table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    .simple-table th {
-      background: #f8f9fa;
-      padding: 1rem;
-      text-align: left;
-      font-weight: 600;
-      color: #2c3e50;
-    }
-
-    .simple-table td {
-      padding: 1rem;
-      border-bottom: 1px solid #e9ecef;
-    }
-  `]
+  imports: [CommonModule],
+  templateUrl: './dashboard.component.html',
+  styleUrls: ['./dashboard.component.scss']
 })
-export class DashboardComponent implements OnInit {
-  showAddShipmentModal = false;
-  newShipment = {
-    trackingNumber: '',
-    origin: '',
-    destination: '',
-    weight: 0,
-    value: 0,
-    carrier: '',
-    priority: 'medium' as 'low' | 'medium' | 'high' | 'urgent'
-  };
+export class DashboardComponent implements OnInit, AfterViewInit {
+  @ViewChild('statusChart') statusChartRef!: ElementRef;
+  @ViewChild('regionChart') regionChartRef!: ElementRef;
+  @ViewChild('trendChart') trendChartRef!: ElementRef;
+  
+  metrics: any = {};
+  shipmentData: any[] = [];
+  statusChart!: Chart;
+  regionChart!: Chart;
+  trendChart!: Chart;
+  selectedPeriod = '7D';
+  
+  recentAlerts = [
+    { id: 1, type: 'warning', message: 'Shipment SC-2024-156 delayed by 2 days', time: '5 min ago', priority: 'high', read: false },
+    { id: 2, type: 'success', message: '15 shipments delivered successfully', time: '12 min ago', priority: 'medium', read: false },
+    { id: 3, type: 'info', message: 'New carrier partnership activated', time: '1 hour ago', priority: 'low', read: false },
+    { id: 4, type: 'error', message: 'Payment failed for shipment SC-2024-142', time: '2 hours ago', priority: 'high', read: true },
+    { id: 5, type: 'warning', message: 'Inventory low for Product SKU-789', time: '3 hours ago', priority: 'medium', read: false }
+  ];
 
-  constructor(private supplyChainService: SupplyChainService) {}
+  unreadAlertsCount = this.recentAlerts.filter(alert => !alert.read).length;
+
+  constructor(private supplyChainService: SupplyChainService, private router: Router) {}
 
   ngOnInit(): void {
-    this.loadDashboardData();
+    this.loadData();
   }
 
-  loadDashboardData(): void {
-    // Load initial data
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      this.createCharts();
+      this.initializeFeatherIcons();
+    }, 100);
   }
 
-  openAddShipment(): void {
-    this.showAddShipmentModal = true;
-    this.generateTrackingNumber();
+  loadData(): void {
+    this.supplyChainService.getShipments().subscribe(data => {
+      this.shipmentData = data;
+      this.createCharts();
+      setTimeout(() => this.initializeFeatherIcons(), 100);
+    });
+
+    this.supplyChainService.getMetrics().subscribe(data => {
+      this.metrics = data;
+      setTimeout(() => this.initializeFeatherIcons(), 100);
+    });
   }
 
-  closeAddShipmentModal(): void {
-    this.showAddShipmentModal = false;
-    this.resetForm();
+  createCharts(): void {
+    if (this.shipmentData.length === 0) return;
+    
+    // Destroy existing charts
+    if (this.statusChart) this.statusChart.destroy();
+    if (this.regionChart) this.regionChart.destroy();
+    if (this.trendChart) this.trendChart.destroy();
+    
+    this.createStatusChart();
+    this.createRegionChart();
+    this.createTrendChart();
+    
+    setTimeout(() => this.initializeFeatherIcons(), 200);
   }
 
-  generateTrackingNumber(): void {
-    const timestamp = Date.now().toString().slice(-6);
-    this.newShipment.trackingNumber = `SC${timestamp}`;
-  }
+  createStatusChart(): void {
+    const statusCounts = this.shipmentData.reduce((acc, item) => {
+      acc[item.status] = (acc[item.status] || 0) + 1;
+      return acc;
+    }, {});
 
-  resetForm(): void {
-    this.newShipment = {
-      trackingNumber: '',
-      origin: '',
-      destination: '',
-      weight: 0,
-      value: 0,
-      carrier: '',
-      priority: 'medium'
+    const statusColors = {
+      'Delivered': '#10b981',
+      'In Transit': '#3b82f6', 
+      'Processing': '#f59e0b',
+      'Delayed': '#ef4444',
+      'Pending': '#8b5cf6'
     };
+
+    const labels = Object.keys(statusCounts);
+    const colors = labels.map(label => statusColors[label as keyof typeof statusColors] || '#6b7280');
+
+    this.statusChart = new Chart(this.statusChartRef.nativeElement, {
+      type: 'doughnut',
+      data: {
+        labels: labels,
+        datasets: [{
+          data: Object.values(statusCounts),
+          backgroundColor: colors,
+          borderWidth: 4,
+          borderColor: '#ffffff',
+          hoverBorderWidth: 6,
+          hoverOffset: 12,
+          hoverBackgroundColor: colors.map(color => color + 'CC')
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '70%',
+        animation: {
+          animateRotate: true,
+          duration: 1500
+        },
+        plugins: {
+          legend: {
+            position: 'right',
+            align: 'center',
+            onClick: (e: any, legendItem: any, legend: any) => {
+              const index = legendItem.index;
+              const chart = legend.chart;
+              const meta = chart.getDatasetMeta(0);
+              
+              (meta.data[index] as any).hidden = !(meta.data[index] as any).hidden;
+              chart.update();
+            },
+            labels: {
+              padding: 15,
+              usePointStyle: true,
+              pointStyle: 'circle',
+              font: {
+                family: 'Montserrat',
+                size: 13,
+                weight: 600
+              },
+              color: '#374151',
+              generateLabels: (chart: any) => {
+                const data = chart.data;
+                const total = (data.datasets[0].data as number[]).reduce((a: number, b: number) => a + b, 0);
+                const meta = chart.getDatasetMeta(0);
+                
+                return data.labels.map((label: string, i: number) => {
+                  const value = data.datasets[0].data[i] as number;
+                  const percentage = ((value * 100) / total).toFixed(1);
+                  const isHidden = (meta.data[i] as any).hidden;
+                  
+                  return {
+                    text: `${label} (${percentage}%)`,
+                    fillStyle: isHidden ? '#d1d5db' : data.datasets[0].backgroundColor[i],
+                    strokeStyle: isHidden ? '#d1d5db' : data.datasets[0].backgroundColor[i],
+                    pointStyle: 'circle',
+                    hidden: false,
+                    index: i,
+                    fontColor: isHidden ? '#9ca3af' : '#374151',
+                    textDecoration: isHidden ? 'line-through' : 'none'
+                  };
+                });
+              }
+            }
+          },
+          tooltip: {
+            backgroundColor: 'rgba(30, 41, 59, 0.95)',
+            titleColor: '#ffffff',
+            bodyColor: '#ffffff',
+            borderColor: '#64748b',
+            borderWidth: 1,
+            cornerRadius: 12,
+            displayColors: true,
+            titleFont: {
+              family: 'Montserrat',
+              size: 14,
+              weight: 600
+            },
+            bodyFont: {
+              family: 'Montserrat',
+              size: 13,
+              weight: 500
+            },
+            callbacks: {
+              title: (context: any) => {
+                return `Status: ${context[0].label}`;
+              },
+              label: (context: any) => {
+                const total = (context.dataset.data as number[]).reduce((a: number, b: number) => a + b, 0);
+                const percentage = ((context.parsed * 100) / total).toFixed(1);
+                return [`Count: ${context.parsed}`, `Percentage: ${percentage}%`];
+              }
+            }
+          }
+        }
+      }
+    });
   }
 
-  saveShipment(): void {
-    if (this.isFormValid()) {
-      const shipmentData = {
-        ...this.newShipment,
-        status: 'pending' as const,
-        estimatedDelivery: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days from now
-      };
-      
-      this.supplyChainService.addShipment(shipmentData).subscribe(() => {
-        this.closeAddShipmentModal();
-        // Show success message
-        alert('Shipment created successfully!');
-      });
+  createRegionChart(): void {
+    const regionCounts = this.shipmentData.reduce((acc, item) => {
+      acc[item.region] = (acc[item.region] || 0) + 1;
+      return acc;
+    }, {});
+
+    const total = (Object.values(regionCounts) as number[]).reduce((a: number, b: number) => a + b, 0);
+    const colors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#f97316'];
+
+    this.regionChart = new Chart(this.regionChartRef.nativeElement, {
+      type: 'bar',
+      data: {
+        labels: Object.keys(regionCounts),
+        datasets: [{
+          label: 'Shipments by Region',
+          data: Object.values(regionCounts),
+          backgroundColor: colors.slice(0, Object.keys(regionCounts).length),
+          borderRadius: 8,
+          borderSkipped: false,
+          borderWidth: 2,
+          borderColor: 'rgba(255, 255, 255, 0.8)'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: {
+          duration: 1500,
+          easing: 'easeOutQuart'
+        },
+        onClick: (event: any, elements: any) => {
+          if (elements.length > 0) {
+            const index = elements[0].index;
+            const meta = this.regionChart.getDatasetMeta(0);
+            const element = meta.data[index] as any;
+            element.hidden = !element.hidden;
+            this.regionChart.update();
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            grid: {
+              color: '#f3f4f6'
+            },
+            ticks: {
+              font: {
+                family: 'Montserrat',
+                size: 11
+              },
+              color: '#6b7280',
+              callback: function(value) {
+                return value + ' shipments';
+              }
+            }
+          },
+          x: {
+            grid: {
+              display: false
+            },
+            ticks: {
+              font: {
+                family: 'Montserrat',
+                size: 11,
+                weight: 500
+              },
+              color: '#374151'
+            }
+          }
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: 'rgba(30, 41, 59, 0.95)',
+            titleColor: '#ffffff',
+            bodyColor: '#ffffff',
+            borderColor: '#64748b',
+            borderWidth: 1,
+            cornerRadius: 12,
+            displayColors: true,
+            titleFont: {
+              family: 'Montserrat',
+              size: 14,
+              weight: 600
+            },
+            bodyFont: {
+              family: 'Montserrat',
+              size: 13,
+              weight: 500
+            },
+            callbacks: {
+              title: (context: any) => {
+                return `Region: ${context[0].label}`;
+              },
+              label: (context: any) => {
+                const percentage = ((context.parsed.y * 100) / total).toFixed(1);
+                return [`Shipments: ${context.parsed.y}`, `Percentage: ${percentage}%`];
+              }
+            }
+          }
+        }
+      }
+    });
+  }
+
+  createTrendChart(): void {
+    const days = this.selectedPeriod === '7D' ? 7 : this.selectedPeriod === '30D' ? 30 : 90;
+    const dateRange = Array.from({length: days}, (_, i) => {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      return date.toISOString().split('T')[0];
+    }).reverse();
+
+    const trendData = dateRange.map((_, index) => {
+      const baseValue = 35;
+      const seasonalVariation = Math.sin(index / days * Math.PI * 2) * 10;
+      const randomVariation = (Math.random() - 0.5) * 15;
+      return Math.max(10, Math.floor(baseValue + seasonalVariation + randomVariation));
+    });
+
+    const movingAverage = trendData.map((_, index) => {
+      const start = Math.max(0, index - 2);
+      const end = Math.min(trendData.length, index + 3);
+      const subset = trendData.slice(start, end);
+      return subset.reduce((sum, val) => sum + val, 0) / subset.length;
+    });
+
+    this.trendChart = new Chart(this.trendChartRef.nativeElement, {
+      type: 'line',
+      data: {
+        labels: dateRange.map(date => {
+          const d = new Date(date);
+          return days <= 7 ? d.toLocaleDateString('en-US', { weekday: 'short' }) :
+                 days <= 30 ? d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) :
+                 d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }),
+        datasets: [
+          {
+            label: 'Daily Shipments',
+            data: trendData,
+            borderColor: '#3b82f6',
+            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+            fill: true,
+            borderWidth: 2,
+            pointBackgroundColor: '#3b82f6',
+            pointBorderColor: '#ffffff',
+            pointBorderWidth: 2,
+            pointRadius: days <= 7 ? 5 : days <= 30 ? 3 : 2,
+            pointHoverRadius: 7,
+            tension: 0.4
+          },
+          {
+            label: 'Trend Line',
+            data: movingAverage,
+            borderColor: '#10b981',
+            backgroundColor: 'transparent',
+            fill: false,
+            borderWidth: 3,
+            pointRadius: 0,
+            pointHoverRadius: 0,
+            tension: 0.4,
+            borderDash: [5, 5]
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: {
+          duration: 1500,
+          easing: 'easeOutQuart'
+        },
+        interaction: {
+          intersect: false,
+          mode: 'index'
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            grid: {
+              color: '#f3f4f6'
+            },
+            ticks: {
+              font: {
+                family: 'Montserrat',
+                size: 11
+              },
+              color: '#6b7280',
+              callback: function(value) {
+                return value + ' shipments';
+              }
+            }
+          },
+          x: {
+            grid: {
+              display: false
+            },
+            ticks: {
+              font: {
+                family: 'Montserrat',
+                size: 10
+              },
+              color: '#374151',
+              maxTicksLimit: days <= 7 ? 7 : days <= 30 ? 10 : 12
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top',
+            align: 'end',
+            labels: {
+              usePointStyle: true,
+              font: {
+                family: 'Montserrat',
+                size: 11
+              },
+              color: '#6b7280'
+            }
+          },
+          tooltip: {
+            backgroundColor: 'rgba(30, 41, 59, 0.95)',
+            titleColor: '#ffffff',
+            bodyColor: '#ffffff',
+            borderColor: '#64748b',
+            borderWidth: 1,
+            cornerRadius: 8,
+            displayColors: true,
+            callbacks: {
+              title: function(context) {
+                return `Date: ${context[0].label}`;
+              },
+              label: function(context) {
+                return `${context.dataset.label}: ${context.parsed.y} shipments`;
+              }
+            }
+          }
+        }
+      }
+    });
+  }
+
+  getAlertIcon(type: string): string {
+    const icons = {
+      warning: 'alert-triangle',
+      success: 'check-circle',
+      info: 'info',
+      error: 'x-circle'
+    };
+    return icons[type as keyof typeof icons] || 'info';
+  }
+
+  initializeFeatherIcons(): void {
+    try {
+      if (typeof (window as any).feather !== 'undefined') {
+        (window as any).feather.replace();
+      } else {
+        setTimeout(() => {
+          if (typeof (window as any).feather !== 'undefined') {
+            (window as any).feather.replace();
+          }
+        }, 500);
+      }
+    } catch (error) {
+      console.log('Feather icons not available');
     }
   }
 
-  isFormValid(): boolean {
-    return !!(this.newShipment.origin && 
-             this.newShipment.destination && 
-             this.newShipment.carrier && 
-             this.newShipment.weight > 0 && 
-             this.newShipment.value > 0);
+  refreshChart(chartType: string): void {
+    if (chartType === 'status') {
+      if (this.statusChart) this.statusChart.destroy();
+      this.createStatusChart();
+    } else if (chartType === 'region') {
+      if (this.regionChart) this.regionChart.destroy();
+      this.createRegionChart();
+    } else if (chartType === 'trend') {
+      if (this.trendChart) this.trendChart.destroy();
+      this.createTrendChart();
+    }
+    setTimeout(() => this.initializeFeatherIcons(), 100);
   }
+
+  exportChart(chartType: string): void {
+    let chart;
+    let filename = 'chart.png';
+    
+    if (chartType === 'status') {
+      chart = this.statusChart;
+      filename = 'status-chart.png';
+    } else if (chartType === 'region') {
+      chart = this.regionChart;
+      filename = 'region-chart.png';
+    } else if (chartType === 'trend') {
+      chart = this.trendChart;
+      filename = 'trend-chart.png';
+    }
+    
+    if (chart) {
+      const link = document.createElement('a');
+      link.download = filename;
+      link.href = chart.toBase64Image();
+      link.click();
+    }
+  }
+
+  changePeriod(period: string): void {
+    this.selectedPeriod = period;
+    if (this.trendChart) this.trendChart.destroy();
+    this.createTrendChart();
+    setTimeout(() => this.initializeFeatherIcons(), 100);
+  }
+
+  toggleFullscreen(chartType: string): void {
+    const chartCard = document.querySelector(`[data-chart="${chartType}"]`) as HTMLElement;
+    if (chartCard) {
+      if (!document.fullscreenElement) {
+        chartCard.requestFullscreen();
+      } else {
+        document.exitFullscreen();
+      }
+    }
+  }
+
+  // Alert functionality
+  markAsRead(alertId: number): void {
+    const alert = this.recentAlerts.find(a => a.id === alertId);
+    if (alert) {
+      alert.read = true;
+      this.updateUnreadCount();
+    }
+  }
+
+  dismissAlert(alertId: number): void {
+    this.recentAlerts = this.recentAlerts.filter(a => a.id !== alertId);
+    this.updateUnreadCount();
+  }
+
+  updateUnreadCount(): void {
+    this.unreadAlertsCount = this.recentAlerts.filter(alert => !alert.read).length;
+  }
+
+  viewAllAlerts(): void {
+    console.log('Alerts page not implemented yet');
+  }
+
+  // Quick Actions functionality
+  viewAllShipments(): void {
+    this.router.navigate(['/shipments']);
+  }
+
+  generateReport(): void {
+    console.log('Generating report...');
+    const reportData = {
+      totalShipments: this.metrics?.activeShipments || 0,
+      onTimeDelivery: this.metrics?.onTimeDeliveryRate || 0,
+      totalValue: this.metrics?.totalValue || 0,
+      avgTransitTime: this.metrics?.averageDeliveryTime || 0,
+      generatedAt: new Date().toISOString()
+    };
+    
+    // Create and download report
+    const blob = new Blob([JSON.stringify(reportData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `supply-chain-report-${new Date().toISOString().split('T')[0]}.json`;
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+
+
 }
