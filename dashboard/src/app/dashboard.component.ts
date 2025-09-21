@@ -115,14 +115,14 @@ export class DashboardComponent implements OnInit {
     switch (appName) {
       case 'supply-chain-tracker':
         const supplyChainUrl = environment.production 
-          ? 'https://nandhakumar1717.github.io/nexus-platform/supply-chain-tracker/dashboard'
+          ? 'https://nandhakumar1717.github.io/frontcraft/nexus-platform/supply-chain-tracker/'
           : 'http://localhost:4201/dashboard';
         window.location.href = supplyChainUrl;
         break;
         
       case 'pipeline-manager':
         const pipelineUrl = environment.production 
-          ? 'https://nandhakumar1717.github.io/nexus-platform/pipeline-manager/dashboard'
+          ? 'https://nandhakumar1717.github.io/frontcraft/nexus-platform/pipeline-manager/'
           : 'http://localhost:4202/dashboard';
         window.location.href = pipelineUrl;
         break;

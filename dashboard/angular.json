@@ -131,7 +131,8 @@
 						"inlineStyleLanguage": "scss",
 						"assets": [
 							"projects/supply-chain/src/favicon.ico",
-							"projects/supply-chain/src/assets"
+							"projects/supply-chain/src/assets",
+							"projects/supply-chain/src/404.html"
 						],
 						"styles": [
 							"projects/supply-chain/src/styles.scss"

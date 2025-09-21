@@ -25,11 +25,11 @@ jobs:
           
       - name: Build Dashboard
         working-directory: ./dashboard
-        run: npx ng build --configuration production --base-href="/frontcraft/dashboard/"
+        run: npx ng build --configuration production --base-href="/frontcraft/nexus-platform/"
           
       - name: Build Supply Chain
         working-directory: ./dashboard
-        run: npx ng build supply-chain --configuration production
+        run: npx ng build supply-chain --configuration production --base-href="/frontcraft/nexus-platform/supply-chain-tracker/"
           
       - name: Deploy Dashboard to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
@@ -37,7 +37,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dashboard/dist/dashboard
           publish_branch: gh-pages
-          destination_dir: dashboard
+          destination_dir: nexus-platform
           keep_files: true
           
       - name: Deploy Supply Chain to GitHub Pages
@@ -46,5 +46,5 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dashboard/dist/supply-chain
           publish_branch: gh-pages
-          destination_dir: supply-chain
+          destination_dir: nexus-platform/supply-chain-tracker
           keep_files: true
