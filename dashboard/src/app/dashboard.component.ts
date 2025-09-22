@@ -115,7 +115,7 @@ export class DashboardComponent implements OnInit {
     switch (appName) {
       case 'supply-chain-tracker':
         const supplyChainUrl = environment.production 
-          ? 'https://nandhakumar1717.github.io/frontcraft/nexus-platform/supply-chain-tracker/'
+          ? 'https://nandhakumar1717.github.io/frontcraft/nexus-platform/supply-chain-tracker/dashboard'
           : 'http://localhost:4201/dashboard';
         window.location.href = supplyChainUrl;
         break;
