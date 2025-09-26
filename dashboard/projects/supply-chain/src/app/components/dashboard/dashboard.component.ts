@@ -29,15 +29,17 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     { id: 1, type: 'warning', message: 'Shipment SC-2024-156 delayed by 2 days', time: '5 min ago', priority: 'high', read: false },
     { id: 2, type: 'success', message: '15 shipments delivered successfully', time: '12 min ago', priority: 'medium', read: false },
     { id: 3, type: 'info', message: 'New carrier partnership activated', time: '1 hour ago', priority: 'low', read: false },
-    { id: 4, type: 'error', message: 'Payment failed for shipment SC-2024-142', time: '2 hours ago', priority: 'high', read: true },
+    { id: 4, type: 'error', message: 'Payment failed for shipment SC-2024-142', time: '2 hours ago', priority: 'high', read: false },
     { id: 5, type: 'warning', message: 'Inventory low for Product SKU-789', time: '3 hours ago', priority: 'medium', read: false }
   ];
 
-  unreadAlertsCount = this.recentAlerts.filter(alert => !alert.read).length;
+  unreadAlertsCount = 0;
+  showAllAlerts = false;
 
   constructor(private supplyChainService: SupplyChainService, private router: Router) {}
 
   ngOnInit(): void {
+    this.updateUnreadCount();
     this.loadData();
   }
 
@@ -525,12 +527,14 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     if (alert) {
       alert.read = true;
       this.updateUnreadCount();
+      setTimeout(() => this.initializeFeatherIcons(), 100);
     }
   }
 
   dismissAlert(alertId: number): void {
     this.recentAlerts = this.recentAlerts.filter(a => a.id !== alertId);
     this.updateUnreadCount();
+    setTimeout(() => this.initializeFeatherIcons(), 100);
   }
 
   updateUnreadCount(): void {
@@ -538,8 +542,11 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   }
 
   viewAllAlerts(): void {
-    console.log('Alerts page not implemented yet');
+    this.showAllAlerts = !this.showAllAlerts;
+    setTimeout(() => this.initializeFeatherIcons(), 100);
   }
+
+
 
   // Quick Actions functionality
   viewAllShipments(): void {

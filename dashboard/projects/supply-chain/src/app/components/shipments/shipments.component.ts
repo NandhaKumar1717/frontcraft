@@ -373,7 +373,9 @@ export class ShipmentsComponent implements OnInit {
 
   resetFilters(): void {
     this.agGrid.api.setFilterModel(null);
+    this.agGrid.api.setGridOption('quickFilterText', '');
     this.searchText = '';
+    this.loadData();
   }
 
   autoSizeColumns(): void {

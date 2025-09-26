@@ -145,8 +145,8 @@
         </h3>
         <div class="alert-counter" *ngIf="unreadAlertsCount > 0">{{ unreadAlertsCount }}</div>
       </div>
-      <div class="alerts-list">
-        <div class="alert-item" *ngFor="let alert of recentAlerts.slice(0, 3)" [class.read]="alert.read" [class.priority-high]="alert.priority === 'high'">
+      <div class="alerts-list" [class.show-all]="showAllAlerts">
+        <div class="alert-item" *ngFor="let alert of (showAllAlerts ? recentAlerts : recentAlerts.slice(0, 3))" [class.read]="alert.read" [class.priority-high]="alert.priority === 'high'">
           <div class="alert-icon">
             <i [attr.data-feather]="getAlertIcon(alert.type)"></i>
           </div>
@@ -168,7 +168,10 @@
         </div>
       </div>
       <div class="view-all-alerts">
-        <button class="link-btn" (click)="viewAllAlerts()">View All Alerts ({{ recentAlerts.length }}) →</button>
+        <button class="link-btn" (click)="viewAllAlerts()">
+          <i [attr.data-feather]="showAllAlerts ? 'chevron-up' : 'chevron-down'"></i>
+          {{ showAllAlerts ? 'Show Less' : 'View All Alerts (' + recentAlerts.length + ')' }}
+        </button>
       </div>
     </div>
 
@@ -182,9 +185,11 @@
       </div>
       <div class="actions-grid">
         <button class="action-btn" (click)="viewAllShipments()">
-          <i data-feather="list"></i>
-          <span>View All Shipments</span>
-          <div class="action-badge">{{ metrics?.activeShipments || 200 }}+</div>
+          <div class="action-content">
+            <i data-feather="list"></i>
+            <span>View All Shipments</span>
+          </div>
+          <div class="action-badge">{{ metrics?.activeShipments || 1247 }}</div>
         </button>
         <button class="action-btn" (click)="generateReport()">
           <i data-feather="bar-chart-2"></i>
