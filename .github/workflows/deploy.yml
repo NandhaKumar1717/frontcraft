@@ -48,8 +48,9 @@ jobs:
         run: |
           mkdir -p deploy
           # Copy portfolio files to root
-          cp -r * deploy/ || true
-          rm -rf deploy/micro-apps deploy/.git
+          cp -r * deploy/ 2>/dev/null || true
+          # Remove micro-apps and .git from deploy
+          rm -rf deploy/micro-apps deploy/.git deploy/.github 2>/dev/null || true
           # Copy dashboard to subfolder
           mkdir -p deploy/dashboard
           cp -r micro-apps/dashboard/dist/dashboard/* deploy/dashboard/
