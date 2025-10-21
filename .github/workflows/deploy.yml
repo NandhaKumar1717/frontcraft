@@ -38,50 +38,15 @@ jobs:
           npm install --legacy-peer-deps --force
           npm run build -- --configuration=production --base-href=/frontcraft/dashboard/
           
-      - name: Build Supply Chain
+      - name: Prepare deployment
         run: |
-          cd micro-apps/dashboard
-          npx ng build supply-chain --configuration production --base-href="/frontcraft/nexus-platform/supply-chain-tracker/"
-          cp ./dist/supply-chain/index.html ./dist/supply-chain/404.html
-          
-      - name: Debug and prepare deployment
-        run: |
-          echo "=== Current directory contents ==="
-          ls -la
-          echo "=== Portfolio files ==="
-          ls -la || true
-          echo "=== Dashboard build ==="
-          ls -la micro-apps/dashboard/dist/ || true
-          
           mkdir -p deploy
-          
-          # Copy portfolio files (excluding directories we don't want)
-          for item in *; do
-            if [[ "$item" != "micro-apps" && "$item" != ".git" && "$item" != ".github" && "$item" != "deploy" ]]; then
-              cp -r "$item" deploy/ 2>/dev/null || true
-            fi
-          done
-          
+          # Copy portfolio files to root
+          cp -r * deploy/ || true
+          rm -rf deploy/micro-apps deploy/.git
           # Copy dashboard to subfolder
-          if [ -d "micro-apps/dashboard/dist/dashboard" ]; then
-            mkdir -p deploy/dashboard
-            cp -r micro-apps/dashboard/dist/dashboard/* deploy/dashboard/
-            echo "Dashboard copied successfully"
-          else
-            echo "ERROR: Dashboard build not found"
-          fi
-          
-          # Copy supply-chain to nexus-platform subfolder
-          if [ -d "micro-apps/dashboard/dist/supply-chain" ]; then
-            mkdir -p deploy/nexus-platform/supply-chain-tracker
-            cp -r micro-apps/dashboard/dist/supply-chain/* deploy/nexus-platform/supply-chain-tracker/
-            echo "Supply-chain copied successfully"
-          else
-            echo "ERROR: Supply-chain build not found"
-          fi
-          
-          echo "=== Final deploy directory ==="
-          find deploy -type f | head -20
+          mkdir -p deploy/dashboard
+          cp -r micro-apps/dashboard/dist/dashboard/* deploy/dashboard/
           
       - name: Setup Pages
         uses: actions/configure-pages@v4
