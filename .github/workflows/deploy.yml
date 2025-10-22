@@ -38,12 +38,6 @@ jobs:
           npm install --legacy-peer-deps --force
           npm run build -- --configuration=production --base-href=/frontcraft/dashboard/
           
-      - name: Build Supply Chain
-        run: |
-          cd micro-apps/dashboard
-          npx ng build supply-chain --configuration production --base-href="/frontcraft/nexus-platform/supply-chain-tracker/"
-          cp ./dist/supply-chain/index.html ./dist/supply-chain/404.html
-          
       - name: Prepare deployment
         run: |
           mkdir -p deploy
@@ -53,9 +47,6 @@ jobs:
           # Copy dashboard to subfolder
           mkdir -p deploy/dashboard
           cp -r micro-apps/dashboard/dist/dashboard/* deploy/dashboard/
-          # Copy supply-chain to nexus-platform subfolder
-          mkdir -p deploy/nexus-platform/supply-chain-tracker
-          cp -r micro-apps/dashboard/dist/supply-chain/* deploy/nexus-platform/supply-chain-tracker/
           
       - name: Setup Pages
         uses: actions/configure-pages@v4
