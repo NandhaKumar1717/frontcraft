@@ -9,9 +9,17 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout portfolio-2 branch
         uses: actions/checkout@v4
         with:
+          ref: portfolio-2
+          submodules: false
+          
+      - name: Checkout micro-apps branch
+        uses: actions/checkout@v4
+        with:
+          ref: micro-apps
+          path: micro-apps
           submodules: false
         
       - name: Setup Node
@@ -22,26 +30,34 @@ jobs:
           cache-dependency-path: dashboard/package-lock.json
           
       - name: Install dependencies
-        working-directory: ./dashboard
+        working-directory: ./micro-apps/dashboard
         run: npm install --legacy-peer-deps
           
       - name: Build Dashboard
-        working-directory: ./dashboard
+        working-directory: ./micro-apps/dashboard
         run: |
           npx ng build --configuration production --base-href="/frontcraft/nexus-platform/"
           cp ./dist/dashboard/index.html ./dist/dashboard/404.html
           
       - name: Build Supply Chain
-        working-directory: ./dashboard
+        working-directory: ./micro-apps/dashboard
         run: |
           npx ng build supply-chain --configuration production --base-href="/frontcraft/nexus-platform/supply-chain-tracker/"
           cp ./dist/supply-chain/index.html ./dist/supply-chain/404.html
+          
+      - name: Deploy Portfolio to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./
+          publish_branch: gh-pages
+          keep_files: false
           
       - name: Deploy Dashboard to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dashboard/dist/dashboard
+          publish_dir: ./micro-apps/dashboard/dist/dashboard
           publish_branch: gh-pages
           destination_dir: nexus-platform
           keep_files: true
@@ -50,7 +66,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dashboard/dist/supply-chain
+          publish_dir: ./micro-apps/dashboard/dist/supply-chain
           publish_branch: gh-pages
           destination_dir: nexus-platform/supply-chain-tracker
           keep_files: true
