@@ -1,61 +1,68 @@
-name: Deploy Portfolio + Dashboard
+name: Deploy Portfolio + Micro Apps
 
 on:
   push:
     branches: [ micro-apps ]
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
+  workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout portfolio-2 branch
         uses: actions/checkout@v4
         with:
           ref: portfolio-2
           
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
-          
-      - name: Checkout micro-apps for dashboard
+      - name: Checkout micro-apps branch
         uses: actions/checkout@v4
         with:
           ref: micro-apps
           path: micro-apps
+        
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          
+      - name: Install micro-apps dependencies
+        working-directory: ./micro-apps/dashboard
+        run: npm install --legacy-peer-deps
           
       - name: Build Dashboard
+        working-directory: ./micro-apps/dashboard
         run: |
-          cd micro-apps/dashboard
-          npm install --legacy-peer-deps --force
-          npm run build -- --configuration=production --base-href=/frontcraft/dashboard/
+          npx ng build --configuration production --base-href="/frontcraft/nexus-platform/"
+          cp ./dist/dashboard/index.html ./dist/dashboard/404.html
           
-      - name: Prepare deployment
+      - name: Build Supply Chain
+        working-directory: ./micro-apps/dashboard
         run: |
-          mkdir -p deploy
-          # Copy portfolio files to root
-          cp -r * deploy/ || true
-          rm -rf deploy/micro-apps deploy/.git
-          # Copy dashboard to subfolder
-          mkdir -p deploy/dashboard
-          cp -r micro-apps/dashboard/dist/dashboard/* deploy/dashboard/
+          npx ng build supply-chain --configuration production --base-href="/frontcraft/nexus-platform/supply-chain-tracker/"
+          cp ./dist/supply-chain/index.html ./dist/supply-chain/404.html
           
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-        
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Deploy Portfolio to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          path: ./deploy
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./
+          publish_branch: gh-pages
+          keep_files: false
           
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Deploy Dashboard to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./micro-apps/dashboard/dist/dashboard
+          publish_branch: gh-pages
+          destination_dir: nexus-platform
+          keep_files: true
+          
+      - name: Deploy Supply Chain to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./micro-apps/dashboard/dist/supply-chain
+          publish_branch: gh-pages
+          destination_dir: nexus-platform/supply-chain-tracker
+          keep_files: true
