@@ -1,0 +1,54 @@
+{
+  "shipments": [
+    {
+      "trackingId": "SC-2024-001",
+      "origin": "Shanghai",
+      "destination": "Los Angeles",
+      "status": "In Transit",
+      "carrier": "DHL Express",
+      "weight": "2.5 kg",
+      "value": "$1,250"
+    },
+    {
+      "trackingId": "SC-2024-002",
+      "origin": "Mumbai",
+      "destination": "London",
+      "status": "Delivered",
+      "carrier": "FedEx",
+      "weight": "1.8 kg",
+      "value": "$890"
+    },
+    {
+      "trackingId": "SC-2024-003",
+      "origin": "Tokyo",
+      "destination": "New York",
+      "status": "Processing",
+      "carrier": "UPS",
+      "weight": "3.2 kg",
+      "value": "$2,100"
+    },
+    {
+      "trackingId": "SC-2024-004",
+      "origin": "Berlin",
+      "destination": "Sydney",
+      "status": "In Transit",
+      "carrier": "Maersk",
+      "weight": "4.1 kg",
+      "value": "$1,750"
+    },
+    {
+      "trackingId": "SC-2024-005",
+      "origin": "Dubai",
+      "destination": "Toronto",
+      "status": "Delivered",
+      "carrier": "Emirates",
+      "weight": "1.2 kg",
+      "value": "$650"
+    }
+  ],
+  "metrics": {
+    "activeShipments": 1247,
+    "pendingOrders": 89,
+    "deliveredToday": 156
+  }
+}
