@@ -13,12 +13,14 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: portfolio-2
+          submodules: false
           
       - name: Checkout micro-apps branch
         uses: actions/checkout@v4
         with:
           ref: micro-apps
           path: micro-apps
+          submodules: false
         
       - name: Setup Node
         uses: actions/setup-node@v4
