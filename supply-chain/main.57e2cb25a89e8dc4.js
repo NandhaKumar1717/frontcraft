@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunksupply_chain=self.webpackChunksupply_chain||[]).push([[792],{948:(p,a,s)=>{s.e(404).then(s.bind(s,404)).catch(e=>console.error("Error starting app:",e))}},p=>{p(p.s=948)}]);
