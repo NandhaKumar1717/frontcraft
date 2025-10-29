@@ -57,13 +57,10 @@ jobs:
       - name: Prepare combined deployment
         run: |
           mkdir -p deploy
-          # Copy portfolio files to root (excluding hidden files and micro-apps)
-          find . -maxdepth 1 -type f -not -name '.*' -not -name 'micro-apps' -exec cp {} deploy/ \;
-          find . -maxdepth 1 -type d -not -name '.' -not -name '.git' -not -name 'micro-apps' -exec cp -r {} deploy/ \;
-          # Ensure index.html exists at root
-          if [ ! -f deploy/index.html ]; then
-            echo '<!DOCTYPE html><html><head><title>Portfolio</title></head><body><h1>Portfolio Site</h1></body></html>' > deploy/index.html
-          fi
+          # Copy ALL portfolio files to root (preserve structure)
+          cp -r ./* deploy/ 2>/dev/null || true
+          # Remove micro-apps folder from deploy
+          rm -rf deploy/micro-apps
           # Copy dashboard
           mkdir -p deploy/nexus-platform
           cp -r ./micro-apps/dashboard/dist/dashboard/* deploy/nexus-platform/
