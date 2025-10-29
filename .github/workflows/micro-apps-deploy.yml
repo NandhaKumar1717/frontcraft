@@ -54,6 +54,15 @@ jobs:
           npx ng build supply-chain --configuration production --base-href="/frontcraft/nexus-platform/supply-chain-tracker/"
           cp ./dist/supply-chain/index.html ./dist/supply-chain/404.html
           
+      - name: Debug - Check what we have
+        run: |
+          echo "=== PORTFOLIO-2 BRANCH FILES ==="
+          ls -la
+          echo "=== MICRO-APPS BRANCH FILES ==="
+          ls -la micro-apps/
+          echo "=== DASHBOARD DIST FILES ==="
+          ls -la micro-apps/dashboard/dist/ || echo "No dist folder"
+          
       - name: Prepare combined deployment
         run: |
           mkdir -p deploy
@@ -63,17 +72,21 @@ jobs:
           rm -rf deploy/micro-apps
           # Copy dashboard
           mkdir -p deploy/nexus-platform
-          cp -r ./micro-apps/dashboard/dist/dashboard/* deploy/nexus-platform/
+          cp -r ./micro-apps/dashboard/dist/dashboard/* deploy/nexus-platform/ 2>/dev/null || echo "No dashboard files to copy"
           # Copy supply chain
           mkdir -p deploy/nexus-platform/supply-chain-tracker
-          cp -r ./micro-apps/dashboard/dist/supply-chain/* deploy/nexus-platform/supply-chain-tracker/
-          # List what we're deploying
-          echo "Files being deployed:"
+          cp -r ./micro-apps/dashboard/dist/supply-chain/* deploy/nexus-platform/supply-chain-tracker/ 2>/dev/null || echo "No supply-chain files to copy"
+          
+      - name: Debug - Check deployment folder
+        run: |
+          echo "=== DEPLOY FOLDER CONTENTS ==="
           ls -la deploy/
-          echo "Nexus platform files:"
-          ls -la deploy/nexus-platform/ || echo "No nexus-platform files"
-          echo "Supply chain files:"
-          ls -la deploy/nexus-platform/supply-chain-tracker/ || echo "No supply-chain files"
+          echo "=== DEPLOY ROOT FILES ==="
+          find deploy/ -maxdepth 1 -type f
+          echo "=== NEXUS PLATFORM FILES ==="
+          ls -la deploy/nexus-platform/ || echo "No nexus-platform folder"
+          echo "=== SUPPLY CHAIN FILES ==="
+          ls -la deploy/nexus-platform/supply-chain-tracker/ || echo "No supply-chain folder"
           
       - name: Deploy All Apps to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
