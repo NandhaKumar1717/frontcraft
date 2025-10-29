@@ -54,28 +54,23 @@ jobs:
           npx ng build supply-chain --configuration production --base-href="/frontcraft/nexus-platform/supply-chain-tracker/"
           cp ./dist/supply-chain/index.html ./dist/supply-chain/404.html
           
-      - name: Deploy Portfolio to GitHub Pages
+      - name: Prepare combined deployment
+        run: |
+          mkdir -p deploy
+          # Copy portfolio to root
+          cp -r * deploy/ 2>/dev/null || true
+          rm -rf deploy/micro-apps deploy/.git
+          # Copy dashboard
+          mkdir -p deploy/nexus-platform
+          cp -r ./micro-apps/dashboard/dist/dashboard/* deploy/nexus-platform/
+          # Copy supply chain
+          mkdir -p deploy/nexus-platform/supply-chain-tracker
+          cp -r ./micro-apps/dashboard/dist/supply-chain/* deploy/nexus-platform/supply-chain-tracker/
+          
+      - name: Deploy All Apps to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./
+          publish_dir: ./deploy
           publish_branch: gh-pages
           keep_files: false
-          
-      - name: Deploy Dashboard to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./micro-apps/dashboard/dist/dashboard
-          publish_branch: gh-pages
-          destination_dir: nexus-platform
-          keep_files: true
-          
-      - name: Deploy Supply Chain to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./micro-apps/dashboard/dist/supply-chain
-          publish_branch: gh-pages
-          destination_dir: nexus-platform/supply-chain-tracker
-          keep_files: true
